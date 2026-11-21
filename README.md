@@ -24,24 +24,20 @@ Doc/Candy/      框架文档（框架使用 / 类库文档 / 数据库 / 高级�
 
 ## 如何用于一个项目
 
-把本仓库的 `Candy/` 放到项目根目录，`Doc/Candy/` 放到项目的 `Doc/` 下，项目根再放两个入口文件：
+**直接克隆本仓库**即为一个完整可运行的框架工程（`Candy/` + 文档站 + 两个入口都已随库提供）：
 
-```php
-// index.php
-declare(strict_types=1);
-require __DIR__ . '/Candy/Autoload.php';
-N('App')::run();
+```bash
+git clone git@github.com:fingerboy2019/CandyCore.git mysite
+cd mysite
+# 站点根指向本目录，伪静态交 index.php；首次访问 /?start 初始化
 ```
 
-```php
-// candy（CLI）
-#!/usr/bin/env php
-<?php
-require __DIR__ . '/Candy/Autoload.php';
-(new \Console\Initiator())->run();
-```
+| 文件 | 作用 |
+|---|---|
+| `index.php` | Web 入口（`require Candy/Autoload.php` → `N('App')::run()`） |
+| `candy` | CLI 入口（`php candy list` 等） |
 
-首次访问站点根目录会走文档/初始化流程（`?start` 初始化项目）。
+> 框架代码由 `Candy/` 与 `Doc/` 组成；**站点级只剩 `.user.ini`（宝塔生成）不入库**，其余全部随库分发。
 
 ## 同步约定
 
