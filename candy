@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+/***
+ * 命令起始文件
+ * 
+ * $Author: 刘森 (fingerboy@qq.com) $
+ * $Date: 2019-07-24 23:27:52 $   
+ */
+
+//加载命令行基础配置
+require __DIR__ .'/Candy/Autoload.php';
+
+//开启命令
+(new \Console\Initiator())->run();
