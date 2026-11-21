@@ -1,0 +1,37 @@
+<{extend name='Public/table'}>
+<{block name="button"}>
+<{if auth('add')}>
+<button data-modal='<{:U('add')}>' data-title="<{$lang.addTitle}>" class='layui-btn layui-btn-sm layui-btn-primary'>
+    <i class="layui-icon layui-icon-add-1"></i> <{$lang.add}>
+</button>
+<{/if}>
+<{/block}>
+
+<{block name="content"}>
+<table id="{{tableId}}" data-url="<{:U('list.json')}>" data-target-search="form.form-search"></table>
+<{/block}>
+
+<{block name="script"}>
+<script type="text/html" id="barTpl">
+    <{if auth('edit')}>
+    <a class="layui-btn layui-btn-xs" data-modal='<{:U('edit')}>?{{pk}}={{d.{{pk}}}}' data-title="<{$lang.edit}>"><{$lang.edit}></a>
+    <{/if}>
+    <{if auth('remove')}>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" data-action='<{:U('remove.json')}>' data-value="{{pk}}#{{d.{{pk}}}}" data-confirm="<{$lang.deleteConfirm}>"><{$lang.delete}></a>
+    <{/if}>
+</script>
+<script>
+layui.use(['table'], function () {
+    var table = layui.table;
+    table.render({
+        elem: '#{{tableId}}',
+        url: $('#{{tableId}}').data('url'),
+        page: true,
+        autoSort: false,
+        cols: [[
+        {{listColsJs}}
+        ]]
+    });
+});
+</script>
+<{/block}>

@@ -1,0 +1,31 @@
+<?php
+/***
+ * {{modelClass}} 数据层
+ *
+ * 对应表：{{table}}
+ *
+ * $Author: Candy Generator $
+ * $Date: {{date}} $
+ *
+ * @package APP\Model\{{app}}
+ */
+namespace APP\Model\{{app}};
+
+defined('CANDY') OR die('You Are A Bad Guy. o_O???');
+
+class {{modelClass}} {
+
+    /**
+     * 对应数据表名
+     *
+     * @var string
+     */
+    protected $table = '{{table}}';
+
+    /**
+     * 主键字段
+     *
+     * @var string
+     */
+    protected $pk = '{{pk}}';
+}

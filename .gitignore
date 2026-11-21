@@ -1,0 +1,18 @@
+# 运行期产物（框架库内不应出现，防误提交）
+Runtime/
+
+# 索引/缓存工具产物
+.codebase-memory/
+
+# 编辑器与系统文件
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# 临时与备份
+*.tmp
+*.temp
+*.bak
+*.orig

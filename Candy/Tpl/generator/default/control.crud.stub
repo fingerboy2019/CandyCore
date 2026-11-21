@@ -1,0 +1,95 @@
+<?php
+/***
+ * @name {{menuTitle}}
+ *
+ * 文件说明：由 Candy Generator（default）生成
+ * 对应表：{{table}}
+ *
+ * $Author: Candy Generator $
+ * $Date: {{date}} $
+ *
+ * @package APP\Control\{{app}}
+ */
+namespace APP\Control\{{app}};
+
+defined('CANDY') OR die('You Are A Bad Guy. o_O???');
+
+class {{controlClass}} {
+    const classGroup = '{{classGroup}}';
+    const classGroupOrder = {{classGroupOrder}};
+    const classOrder = {{classOrder}};
+
+    /**
+     * 列表页
+     */
+    #[Annotation(title: '{{menuTitle}}', icon: '{{layuiIcon}}', auth: true, menu: true)]
+    function index(){
+        $this->assign('title', C('actInfo')['Title'] ?? L('pageTitle'));
+        $this->display();
+    }
+
+    /**
+     * 列表数据
+     */
+    #[Annotation(title: '{{menuTitle}}列表', auth: true)]
+    function list(){
+        $result = {{dataAccessor}}('{{dataTarget}}')->getList(I('get.'));
+        $this->assign([
+            'code' => $result['code'],
+            'count' => $result['count'] ?? 0,
+            'message' => $result['message'] ?? '',
+            'data' => $result['data'] ?? [],
+        ]);
+        $this->display();
+    }
+
+    /**
+     * 添加
+     */
+    #[Annotation(title: '添加{{menuTitle}}', auth: true)]
+    function add(){
+        if (C('METHOD') === 'POST') {
+            $res = {{dataAccessor}}('{{dataTarget}}')->addRow(I('post.'));
+            $this->assign(['code' => $res['code'], 'message' => $res['message']]);
+            $this->display();
+            return;
+        }
+        $this->display('form');
+    }
+
+    /**
+     * 编辑
+     */
+    #[Annotation(title: '编辑{{menuTitle}}', auth: true)]
+    function edit(){
+        if (C('METHOD') === 'POST') {
+            $res = {{dataAccessor}}('{{dataTarget}}')->editRow(I('post.'));
+            $this->assign(['code' => $res['code'], 'message' => $res['message']]);
+            $this->display();
+            return;
+        }
+        $id = I('get.{{pk}}');
+        $vo = {{dataAccessor}}('{{dataTarget}}')->findById($id);
+        if (empty($vo)) {
+            $this->error(L('recordNotFound'), 3, 'index');
+            return;
+        }
+        $this->assign('vo', $vo);
+        $this->display('form');
+    }
+
+    /**
+     * 删除
+     */
+    #[Annotation(title: '删除{{menuTitle}}', auth: true, log: true)]
+    function remove(){
+        if (C('METHOD') !== 'POST') {
+            $this->assign(['code' => 1, 'message' => L('requestMethodError')]);
+            $this->display();
+            return;
+        }
+        $res = {{dataAccessor}}('{{dataTarget}}')->removeRow(I('post.'));
+        $this->assign(['code' => $res['code'], 'message' => $res['message']]);
+        $this->display();
+    }
+}

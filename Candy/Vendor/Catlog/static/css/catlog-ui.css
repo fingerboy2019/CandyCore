@@ -1,0 +1,660 @@
+/**
+ * Catlog UI — 包内独有主题（不依赖 Public）
+ * 视觉：深岩灰底 + 琥珀强调（性能分析气质），与 Admin Layui 隔离
+ */
+
+:root {
+  --cl-bg: #0c1222;
+  --cl-bg-elev: #141c2e;
+  --cl-bg-soft: #1a2438;
+  --cl-line: rgba(148, 163, 184, 0.18);
+  --cl-text: #e8eef7;
+  --cl-muted: #94a3b8;
+  --cl-accent: #f59e0b;
+  --cl-accent-2: #38bdf8;
+  --cl-danger: #f87171;
+  --cl-ok: #34d399;
+  --cl-font: "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --cl-mono: ui-monospace, "Cascadia Code", "SF Mono", Consolas, "Liberation Mono", monospace;
+  --cl-radius: 14px;
+  --cl-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(56, 189, 248, 0.12), transparent 55%),
+    radial-gradient(900px 500px at 90% 0%, rgba(245, 158, 11, 0.14), transparent 50%),
+    var(--cl-bg);
+  color: var(--cl-text);
+  font-family: var(--cl-font);
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  color-scheme: dark;
+}
+
+/* 选中文字：避免浏览器默认在深色页上变成白底白字 */
+::selection,
+body.catlog-ui ::selection,
+body.catlog-ui *::selection {
+  background: #f59e0b;
+  color: #111827;
+}
+
+::-moz-selection,
+body.catlog-ui ::-moz-selection,
+body.catlog-ui *::-moz-selection {
+  background: #f59e0b;
+  color: #111827;
+}
+
+/* —— 壳层 —— */
+.catlog-shell {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 28px 20px 48px;
+}
+
+.catlog-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, rgba(26, 36, 56, 0.95), rgba(20, 28, 46, 0.88));
+  border: 1px solid var(--cl-line);
+  border-radius: var(--cl-radius);
+  box-shadow: var(--cl-shadow);
+  backdrop-filter: blur(10px);
+}
+
+.catlog-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.catlog-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, #f59e0b, #ea580c);
+  color: #111827;
+  font-weight: 700;
+  font-family: var(--cl-mono);
+  font-size: 13px;
+  letter-spacing: -0.02em;
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.35);
+}
+
+.catlog-brand-text strong {
+  display: block;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+}
+
+.catlog-brand-text span {
+  display: block;
+  color: var(--cl-muted);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.catlog-meta {
+  color: var(--cl-muted);
+  font-size: 12px;
+  font-family: var(--cl-mono);
+  text-align: right;
+}
+
+.catlog-panel {
+  background: rgba(20, 28, 46, 0.92);
+  border: 1px solid var(--cl-line);
+  border-radius: var(--cl-radius);
+  box-shadow: var(--cl-shadow);
+  padding: 18px 18px 8px;
+  overflow: hidden;
+}
+
+.catlog-panel-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding: 0 4px 12px;
+  border-bottom: 1px solid var(--cl-line);
+}
+
+.catlog-panel-title h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.catlog-panel-title p {
+  margin: 0;
+  color: var(--cl-muted);
+  font-size: 12px;
+}
+
+/* —— 鉴权页 —— */
+.catlog-auth {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.catlog-auth-card {
+  width: min(420px, 100%);
+  background: rgba(20, 28, 46, 0.95);
+  border: 1px solid var(--cl-line);
+  border-radius: 18px;
+  box-shadow: var(--cl-shadow);
+  padding: 28px 26px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.catlog-auth-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--cl-accent), var(--cl-accent-2));
+}
+
+.catlog-auth-card .catlog-brand {
+  margin-bottom: 18px;
+}
+
+.catlog-auth h1 {
+  margin: 0 0 6px;
+  font-size: 22px;
+}
+
+.catlog-auth .hint {
+  margin: 0 0 20px;
+  color: var(--cl-muted);
+  font-size: 13px;
+}
+
+.catlog-field {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.catlog-field span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--cl-muted);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.catlog-field input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--cl-line);
+  background: var(--cl-bg);
+  color: var(--cl-text);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: var(--cl-mono);
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.catlog-field input:focus {
+  border-color: rgba(245, 158, 11, 0.7);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
+}
+
+.catlog-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
+  color: #111827;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform .12s ease, filter .12s ease;
+}
+
+.catlog-btn:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.catlog-auth-foot {
+  margin-top: 16px;
+  color: var(--cl-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.catlog-auth-foot code {
+  font-family: var(--cl-mono);
+  color: var(--cl-accent-2);
+  font-size: 11px;
+}
+
+/* —— 表格 / 报告区覆盖旧 Bootstrap —— */
+body.catlog-ui .container-fluid,
+body.catlog-ui .container {
+  width: auto !important;
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+body.catlog-ui .table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: transparent;
+  color: var(--cl-text);
+  margin-bottom: 12px;
+}
+
+body.catlog-ui .table > thead > tr > th {
+  background: var(--cl-bg-soft);
+  color: var(--cl-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  border: 0 !important;
+  border-bottom: 1px solid var(--cl-line) !important;
+  padding: 12px 12px !important;
+  white-space: nowrap;
+}
+
+body.catlog-ui .table > tbody > tr > td {
+  border: 0 !important;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1) !important;
+  padding: 11px 12px !important;
+  vertical-align: middle;
+  background: transparent !important;
+  color: var(--cl-text);
+}
+
+/* DataTables odd/even 斑马纹改为深色（避免白行看不见字） */
+body.catlog-ui table.dataTable tbody tr.odd > td,
+body.catlog-ui table.dataTable.stripe tbody tr.odd > td,
+body.catlog-ui table.dataTable.display tbody tr.odd > td {
+  background-color: transparent !important;
+  color: var(--cl-text) !important;
+}
+
+body.catlog-ui table.dataTable tbody tr.even > td,
+body.catlog-ui table.dataTable.stripe tbody tr.even > td,
+body.catlog-ui table.dataTable.display tbody tr.even > td {
+  background-color: rgba(255, 255, 255, 0.035) !important;
+  color: var(--cl-text) !important;
+}
+
+/* 覆盖 Bootstrap .table-hover 的 #f5f5f5，避免白底 + 白字看不见 */
+body.catlog-ui .table-hover > tbody > tr:hover,
+body.catlog-ui .table > tbody > tr:hover {
+  background-color: rgba(56, 189, 248, 0.12) !important;
+}
+
+body.catlog-ui .table-hover > tbody > tr:hover > td,
+body.catlog-ui .table > tbody > tr:hover > td {
+  background-color: transparent !important;
+  color: var(--cl-text) !important;
+}
+
+body.catlog-ui .table-hover > tbody > tr:hover > td.red,
+body.catlog-ui .table > tbody > tr:hover > td.red,
+body.catlog-ui .table-hover > tbody > tr:hover > td .red {
+  color: var(--cl-danger) !important;
+}
+
+body.catlog-ui .table-hover > tbody > tr:hover a,
+body.catlog-ui .table > tbody > tr:hover a {
+  color: #7dd3fc !important;
+}
+
+body.catlog-ui .table-striped > tbody > tr:nth-of-type(odd),
+body.catlog-ui .table-striped > tbody > tr:nth-of-type(odd) > td {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+body.catlog-ui .table a {
+  color: var(--cl-accent-2);
+  text-decoration: none;
+  word-break: break-all;
+  font-family: var(--cl-mono);
+  font-size: 12.5px;
+}
+
+body.catlog-ui .table a:hover {
+  color: #7dd3fc;
+  text-decoration: underline;
+}
+
+body.catlog-ui td.red,
+body.catlog-ui .red {
+  color: var(--cl-danger) !important;
+  font-weight: 600;
+  font-family: var(--cl-mono);
+}
+
+body.catlog-ui td.vbar,
+body.catlog-ui th.vbar,
+body.catlog-ui td.vbbar,
+body.catlog-ui td.vwbar,
+body.catlog-ui th.vwbar,
+body.catlog-ui td.vrbar,
+body.catlog-ui td.vgbar {
+  border-left-color: var(--cl-line) !important;
+  font-family: var(--cl-mono);
+  font-size: 12px;
+}
+
+body.catlog-ui td.vrbar { color: var(--cl-danger) !important; }
+body.catlog-ui td.vgbar { color: var(--cl-ok) !important; }
+body.catlog-ui td.sorted { color: var(--cl-accent) !important; }
+
+body.catlog-ui .bubble {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--cl-text);
+}
+
+body.catlog-ui ul.xhprof_actions {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+}
+
+body.catlog-ui ul.xhprof_actions li {
+  width: auto;
+  margin: 0 0 8px;
+  padding: 10px 12px;
+  background: var(--cl-bg-soft);
+  border: 1px solid var(--cl-line);
+  border-radius: 10px;
+}
+
+body.catlog-ui hr {
+  border: 0;
+  border-top: 1px solid var(--cl-line);
+  margin: 16px 0;
+}
+
+body.catlog-ui p.blue,
+body.catlog-ui .blue {
+  color: var(--cl-accent-2) !important;
+}
+
+/* DataTables 控件 */
+body.catlog-ui .dataTables_wrapper .dataTables_filter input,
+body.catlog-ui .dataTables_wrapper .dataTables_length select {
+  background: var(--cl-bg);
+  border: 1px solid var(--cl-line);
+  color: var(--cl-text);
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
+body.catlog-ui .dataTables_wrapper .dataTables_info,
+body.catlog-ui .dataTables_wrapper .dataTables_filter,
+body.catlog-ui .dataTables_wrapper .dataTables_length {
+  color: var(--cl-muted);
+  margin-bottom: 10px;
+}
+
+body.catlog-ui .pagination > li > a,
+body.catlog-ui .pagination > li > span {
+  background: var(--cl-bg-soft) !important;
+  border-color: var(--cl-line) !important;
+  color: var(--cl-text) !important;
+}
+
+body.catlog-ui .pagination > .active > a {
+  background: rgba(245, 158, 11, 0.25) !important;
+  border-color: rgba(245, 158, 11, 0.45) !important;
+  color: var(--cl-accent) !important;
+}
+
+body.catlog-ui .method-pill {
+  display: inline-block;
+  min-width: 48px;
+  text-align: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-family: var(--cl-mono);
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--cl-accent-2);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+}
+
+body.catlog-ui .method-pill.is-post {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--cl-accent);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+body.catlog-ui .num {
+  font-family: var(--cl-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 720px) {
+  .catlog-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .catlog-meta { text-align: left; }
+}
+
+/* —— 详情页：导航 / 摘要头 / 斑马纹 / 函数名列 —— */
+
+/* Bootstrap navbar：深色底 + 可读文字 */
+body.catlog-ui .navbar,
+body.catlog-ui .navbar-inverse {
+  background: rgba(20, 28, 46, 0.96) !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--cl-line) !important;
+  margin-bottom: 18px;
+}
+
+body.catlog-ui .navbar-inverse .navbar-brand,
+body.catlog-ui .navbar-inverse .navbar-nav > li > a {
+  color: var(--cl-text) !important;
+}
+
+body.catlog-ui .navbar-inverse .navbar-nav > .active > a,
+body.catlog-ui .navbar-inverse .navbar-nav > .active > a:hover {
+  background: rgba(245, 158, 11, 0.18) !important;
+  color: var(--cl-accent) !important;
+}
+
+body.catlog-ui .navbar-inverse .navbar-toggle .icon-bar {
+  background-color: var(--cl-text);
+}
+
+/* 摘要头部 well：禁止 Bootstrap 白底导致字看不见 */
+body.catlog-ui .well,
+body.catlog-ui .well-sm,
+body.catlog-ui .catlog-summary {
+  background: var(--cl-bg-elev) !important;
+  border: 1px solid var(--cl-line) !important;
+  border-radius: var(--cl-radius) !important;
+  box-shadow: var(--cl-shadow);
+  color: var(--cl-text) !important;
+  padding: 16px 18px !important;
+}
+
+body.catlog-ui .well h3,
+body.catlog-ui .well h4,
+body.catlog-ui .catlog-summary h3,
+body.catlog-ui .catlog-summary h4,
+body.catlog-ui h3,
+body.catlog-ui h4 {
+  color: var(--cl-text) !important;
+}
+
+body.catlog-ui .well td,
+body.catlog-ui .well th,
+body.catlog-ui .catlog-summary td,
+body.catlog-ui .catlog-summary th {
+  color: var(--cl-text) !important;
+  background: transparent !important;
+  border-color: var(--cl-line) !important;
+}
+
+/* 表单控件（搜索框） */
+body.catlog-ui .form-control,
+body.catlog-ui .btn-default {
+  background: var(--cl-bg) !important;
+  border-color: var(--cl-line) !important;
+  color: var(--cl-text) !important;
+}
+
+body.catlog-ui .btn-default:hover {
+  background: var(--cl-bg-soft) !important;
+  color: var(--cl-accent) !important;
+}
+
+/* 兜底：覆盖遗留 bgcolor 属性（旧 HTML / 缓存） */
+body.catlog-ui tr[bgcolor],
+body.catlog-ui tr[bgcolor] > td,
+body.catlog-ui tr[bgcolor] > th,
+body.catlog-ui table[bgcolor],
+body.catlog-ui table[bgcolor] td,
+body.catlog-ui table[bgcolor] th {
+  background-color: transparent !important;
+  color: var(--cl-text) !important;
+}
+
+body.catlog-ui tr[bgcolor="#bdc7d8"] > th,
+body.catlog-ui tr[bgcolor="#bdc7d8"] > td,
+body.catlog-ui tr[bgcolor="#BDC7D8"] > th,
+body.catlog-ui tr[bgcolor="#BDC7D8"] > td {
+  background: var(--cl-bg-soft) !important;
+  color: var(--cl-muted) !important;
+}
+
+body.catlog-ui tr[bgcolor="#e5e5e5"] > td,
+body.catlog-ui tr[bgcolor="#E5E5E5"] > td,
+body.catlog-ui tr[bgcolor="#ffffff"] > td,
+body.catlog-ui tr[bgcolor="#FFFFFF"] > td,
+body.catlog-ui tr[bgcolor="#e0e0ff"] > td,
+body.catlog-ui tr[bgcolor="#E0E0FF"] > td {
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: var(--cl-text) !important;
+}
+
+/* 表头 / 分区行 / 斑马纹 */
+body.catlog-ui .catlog-th-row > th,
+body.catlog-ui .catlog-th-row > td {
+  background: var(--cl-bg-soft) !important;
+  color: var(--cl-muted) !important;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid var(--cl-line) !important;
+  padding: 12px 14px !important;
+  white-space: nowrap;
+}
+
+body.catlog-ui .catlog-section-row > td {
+  background: rgba(56, 189, 248, 0.1) !important;
+  color: var(--cl-accent-2) !important;
+  font-size: 13px;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid var(--cl-line) !important;
+}
+
+body.catlog-ui tr.catlog-row > td {
+  background: transparent !important;
+  color: var(--cl-text) !important;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1) !important;
+  padding: 12px 14px !important;
+  vertical-align: top;
+  line-height: 1.45;
+}
+
+body.catlog-ui .table > tbody > tr.catlog-row-alt > td,
+body.catlog-ui tr.catlog-row-alt > td {
+  background: rgba(255, 255, 255, 0.035) !important;
+}
+
+body.catlog-ui .table > tbody > tr.catlog-row:hover > td,
+body.catlog-ui tr.catlog-row:hover > td {
+  background: rgba(56, 189, 248, 0.1) !important;
+}
+
+/* 取消 table-condensed 过窄行高；函数/类名列加宽可换行 */
+body.catlog-ui .table-condensed > tbody > tr > td,
+body.catlog-ui .table-condensed > thead > tr > th,
+body.catlog-ui .table-condensed > tr > td,
+body.catlog-ui .table-condensed > tr > th {
+  padding: 12px 14px !important;
+}
+
+body.catlog-ui .catlog-table-wrap {
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1px solid var(--cl-line);
+  border-radius: 12px;
+  background: rgba(20, 28, 46, 0.55);
+}
+
+body.catlog-ui .catlog-detail-table,
+body.catlog-ui .catlog-summary-table {
+  margin: 0;
+  table-layout: auto;
+}
+
+body.catlog-ui .catlog-fn,
+body.catlog-ui td.catlog-fn,
+body.catlog-ui th.catlog-fn,
+body.catlog-ui .catlog-detail-table td:first-child,
+body.catlog-ui .catlog-detail-table th:first-child {
+  min-width: 320px;
+  width: 42%;
+  max-width: 56vw;
+  white-space: normal !important;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-family: var(--cl-mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+}
+
+body.catlog-ui nobr {
+  white-space: normal !important;
+}
+
+body.catlog-ui .catlog-fn a {
+  display: inline;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}

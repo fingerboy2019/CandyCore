@@ -1,0 +1,42 @@
+<?php
+/***
+ * {{menuTitle}} 业务服务层
+ *
+ * 业务说明：单表 CRUD 编排，委托 {{modelClass}} 数据层
+ *
+ * $Author: Candy Generator $
+ * $Date: {{date}} $
+ *
+ * @package APP\Service\{{app}}
+ */
+namespace APP\Service\{{app}};
+
+defined('CANDY') OR die('You Are A Bad Guy. o_O???');
+
+class {{serviceClass}} {
+
+    public function getList(array $params = []): array
+    {
+        return M('{{modelClass}}')->getList($params);
+    }
+
+    public function findById(int|string $id): ?array
+    {
+        return M('{{modelClass}}')->findById($id);
+    }
+
+    public function addRow(array $data): array
+    {
+        return M('{{modelClass}}')->addRow($data);
+    }
+
+    public function editRow(array $data): array
+    {
+        return M('{{modelClass}}')->editRow($data);
+    }
+
+    public function removeRow(array $data): array
+    {
+        return M('{{modelClass}}')->removeRow($data);
+    }
+}

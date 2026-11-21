@@ -1,0 +1,177 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<title>推送网关监控</title><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f6f8fb;color:#0f172a;font:14px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:22px 20px 60px}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+h1{font-size:20px;margin:0;font-weight:700}
+.sub{color:#64748b;font-size:12.5px;margin-top:3px}
+.sub a{color:#2563eb;text-decoration:none}
+.link{display:flex;align-items:center;gap:9px;font-size:12.5px;color:#64748b}
+.dot{width:8px;height:8px;border-radius:50%;background:#cbd5e1;flex:none}
+.dot.on{background:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.15)}
+.dot.poll{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.15)}
+.dot.off{background:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.15)}
+.tabs{display:flex;gap:4px;background:#fff;border:1px solid #e5eaf2;border-radius:12px;padding:5px;margin-bottom:16px;overflow-x:auto}
+.tabs button{flex:none;padding:8px 16px;border:0;background:transparent;color:#64748b;font-size:13px;border-radius:8px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.tabs button:hover{background:#f6f8fb;color:#334155}
+.tabs button.on{background:#2563eb;color:#fff;font-weight:600}
+.panel{display:none}.panel.on{display:block}
+.card{background:#fff;border:1px solid #e5eaf2;border-radius:14px;padding:18px 20px;margin-bottom:15px;box-shadow:0 1px 2px rgba(15,23,42,.03)}
+.card h2{font-size:12.5px;color:#64748b;letter-spacing:.06em;margin:0 0 14px;font-weight:700;text-transform:uppercase}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:12px}
+.kpi .k{background:#f8fafc;border:1px solid #eef2f7;border-radius:11px;padding:13px 15px}
+.kpi .k b{display:block;font-size:26px;font-weight:700;line-height:1.15}
+.kpi .k span{color:#7c8ba1;font-size:12px}
+.kpi .k.warn b{color:#d97706}.kpi .k.ok b{color:#059669}.kpi .k.bad b{color:#dc2626}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:8px 10px;border-bottom:1px solid #f1f5f9;text-align:left}
+th{color:#7c8ba1;font-weight:600;font-size:12px;background:#fafbfd}
+tr:last-child td{border-bottom:none}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px}
+.empty{color:#94a3b8;text-align:center;padding:18px}
+.grid{display:grid;grid-template-columns:120px 1fr;gap:11px 14px;align-items:center}
+label{color:#475569;font-size:13px}
+input,textarea,select{width:100%;padding:8px 11px;border:1px solid #cbd5e1;border-radius:9px;font-size:13px;font-family:inherit;background:#fff}
+input:focus,textarea:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+textarea{min-height:72px;resize:vertical}
+button.act{padding:8px 18px;border:1px solid #2563eb;background:#2563eb;color:#fff;border-radius:9px;font-size:13px;cursor:pointer;font-family:inherit}
+button.act:hover{background:#1d4ed8}button.act:disabled{opacity:.5;cursor:not-allowed}
+.lbtn{padding:4px 11px;font-size:12px;border:1px solid #cbd5e1;background:#fff;color:#475569;border-radius:7px;margin-left:6px;cursor:pointer;font-family:inherit}
+.lbtn:hover{background:#f8fafc}.lbtn.red{color:#dc2626;border-color:#fecaca}
+.bar{height:7px;border-radius:4px;background:#eef2f7;overflow:hidden;margin-top:5px}
+.bar i{display:block;height:100%;background:#3b82f6;border-radius:4px;transition:width .35s}
+.tip{color:#94a3b8;font-size:12px;margin-top:9px;line-height:1.75}
+.tip code,pre code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:12px;font-family:ui-monospace,Menlo,Consolas,monospace;color:#334155}
+pre{background:#0f172a;color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font-size:12.5px;line-height:1.75;margin:10px 0 0;font-family:ui-monospace,Menlo,Consolas,monospace}
+pre .c{color:#64748b}pre .k{color:#7dd3fc}pre .s{color:#86efac}
+#toast{position:fixed;left:50%;top:18px;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 20px;border-radius:9px;opacity:0;transition:.2s;font-size:13px;pointer-events:none;z-index:99}
+#toast.on{opacity:.97}
+</style></head><body><div class="wrap">
+<div class="hd">
+  <div><h1>推送网关监控</h1>
+    <div class="sub">GatewayWorker 三进程 · <span id="modeText">连接中…</span>
+      · <a href="?do=page">刷新</a> · <a href="/sys/service?do=page">服务启停</a> · <a href="?do=stats&view=json">JSON</a></div></div>
+  <div class="link"><span class="dot" id="dot"></span><span id="linkText">未连接</span></div>
+</div>
+
+<div class="tabs" id="tabs">
+  <button data-t="overview" class="on">总览</button>
+  <button data-t="clients">连接</button>
+  <button data-t="apps">应用注册</button>
+  <button data-t="send">发送</button>
+  <button data-t="offline">离线队列</button>
+  <button data-t="audit">审计</button>
+  <button data-t="doc">接口文档</button>
+</div>
+
+<div class="panel on" id="p-overview">
+  <div class="card"><h2>实时概览 <span style="float:right;font-weight:400;text-transform:none" id="tsText"></span></h2>
+    <div class="kpi" id="kpis"></div></div>
+  <div class="card"><h2>各应用分布</h2><div id="appBars"></div></div>
+</div>
+
+<div class="panel" id="p-clients">
+  <div class="card"><h2>在线连接</h2>
+    <table><thead><tr><th style="width:150px">uid</th><th style="width:120px">IP</th><th style="width:80px">端口</th><th>接入时间</th><th style="width:90px">存活</th></tr></thead>
+    <tbody id="clientRows"></tbody></table>
+    <div class="tip">服务端每 25 秒发一次 ping，连续 2 次没有任何客户端数据即断开（僵尸清理）；限流与超限断开记录在「审计」页。</div>
+  </div>
+</div>
+
+<div class="panel" id="p-apps">
+  <div class="card"><h2>已注册应用</h2>
+    <table><thead><tr><th style="width:76px">app_id</th><th style="width:118px">应用</th><th style="width:120px">名称</th><th>token key</th><th style="width:110px">在线/离线</th><th style="width:96px">持久化</th><th style="width:150px"></th></tr></thead>
+    <tbody id="appRows"></tbody></table>
+    <div class="grid" style="margin-top:16px">
+      <label>应用标识</label><input id="rApp" placeholder="小写字母开头 2-24 位，如 home">
+      <label>显示名称</label><input id="rLabel" placeholder="如 门户站">
+      <label>离线保留</label><input id="rTtl" value="604800" placeholder="秒（604800=7天）">
+      <label>队列上限</label><input id="rMax" value="200" placeholder="条">
+      <label>持久化</label><select id="rPersist">
+        <option value="1" selected>双写：GlobalData + Cache（重启不丢）</option>
+        <option value="0">仅内存：只写 GlobalData（省 Redis，重启丢）</option>
+      </select>
+    </div>
+    <div style="margin-top:13px"><button class="act" id="btnReg">注册应用</button></div>
+  </div>
+</div>
+
+<div class="panel" id="p-send">
+  <div class="card"><h2>发送消息</h2>
+    <div class="grid">
+      <label>应用</label><input id="sApp" value="demo" placeholder="应用标识">
+      <label>目标</label><input id="sTarget" value="34" placeholder="all 广播 · 34 单人 · #dept-12 分组">
+      <label>标题</label><input id="sTitle" placeholder="可选">
+      <label>内容</label><textarea id="sMsg" placeholder="消息正文"></textarea>
+    </div>
+    <div style="margin-top:13px"><button class="act" id="btnSend">发送</button></div>
+    <div class="tip">这是后台手工测试入口；业务代码请调 <code>Target::app('home')->toUid()</code>。</div>
+  </div>
+</div>
+
+<div class="panel" id="p-offline">
+  <div class="card"><h2>待补发的离线队列</h2>
+    <table><thead><tr><th>目标</th><th style="width:180px">最后写入</th><th style="width:120px"></th></tr></thead>
+    <tbody id="offRows"></tbody></table>
+    <div class="tip">客户端 <code>login</code> 时自动补发并清空；也可手工清。</div>
+  </div>
+</div>
+
+<div class="panel" id="p-audit">
+  <div class="card"><h2>今日审计</h2>
+    <div class="kpi" id="auditKpis"></div>
+    <div class="tip">日志落地在 <code>Runtime/Logs/push-YYYY-MM-DD.log</code>，但**不用登服务器看文件** —— 下面就是可筛选的明细。</div>
+  </div>
+  <div class="card"><h2>审计明细</h2>
+    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:13px">
+      <select id="aDay" style="width:140px"></select>
+      <select id="aTag" style="width:140px">
+        <option value="">全部类型</option>
+        <option value="SEND">推送 SEND</option>
+        <option value="ACK">回执 ACK</option>
+        <option value="CLOSE">断开 CLOSE</option>
+        <option value="MISS">缺应用 MISS</option>
+      </select>
+      <input id="aApp" placeholder="按应用筛选" style="width:150px">
+      <button class="act" id="btnAudit">查询</button>
+    </div>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th style="width:76px">时间</th><th style="width:76px">类型</th><th style="width:100px">应用</th>
+      <th style="width:120px">目标</th><th style="width:104px">结果</th><th>详情</th></tr></thead>
+      <tbody id="auditRows"></tbody></table></div>
+    <div class="tip" id="auditTip"></div>
+  </div>
+</div>
+
+<div class="panel" id="p-doc">
+  <div class="card"><h2>接口文档</h2>
+    <table><thead><tr><th style="width:130px">参数</th><th style="width:80px">必填</th><th>说明</th></tr></thead><tbody>
+    <tr><td class="mono">app_id</td><td>是</td><td>应用注册后分配的数字 ID（公开标识）</td></tr>
+    <tr><td class="mono">app_key</td><td>是</td><td>token key（<span class="mono">pk_</span> 开头 32 位），保密</td></tr>
+    <tr><td class="mono">target</td><td>否</td><td><code>all</code> / <code>34</code> / <code>#group</code>，缺省 all</td></tr>
+    <tr><td class="mono">msg</td><td>是</td><td>正文，≤ 8KB</td></tr>
+    <tr><td class="mono">title</td><td>否</td><td>标题</td></tr>
+    </tbody></table>
+    <div class="tip"><b>HTTP：</b><code>POST /sys/push?do=api</code>（不需要 endpoint token）</div>
+<pre><span class="c"># HTTP 调用</span>
+curl -X POST <span class="s">'http://okr.kexinlai.com/sys/push?do=api'</span> \
+  -d <span class="k">app_id</span>=1001 -d <span class="k">app_key</span>=pk_xxx \
+  -d <span class="k">target</span>=34 -d <span class="k">msg</span>=你有新的工单
+
+<span class="c">// 服务端内部（同框架，不走 HTTP）</span>
+<span class="k">\Candy\Extend\Tools\Push\Target</span>::app(1001)->toUid(34, <span class="s">'你有新的工单'</span>);
+<span class="c">// app(1001) 传 app_id；也兼容 app('home') 传应用名（内部可读写法）</span></pre>
+<pre><span class="c">// 客户端 WebSocket（wss 需网关配证书，否则前端自动回退轮询）</span>
+var proto = location.protocol === <span class="s">'https:'</span> ? <span class="s">'wss:'</span> : <span class="s">'ws:'</span>;
+var ws = <span class="k">new</span> WebSocket(proto + <span class="s">'//'</span> + location.hostname + <span class="s">':4020'</span>);
+ws.onopen = () =&gt; ws.send(JSON.stringify({<span class="k">act</span>:<span class="s">'login'</span>, <span class="k">app_id</span>:1001, <span class="k">uid</span>:34}));
+<span class="c">// 收到 {act:'login',ok:true,uid:'home:34',flushed:N}</span>
+<span class="c">//      {act:'message',msg_id,title,body,payload,ts}  → 回 ack 可留痕</span>
+<span class="c">//      {act:'ping'}                                  → 必须回 {act:'pong'}</span></pre>
+  </div>
+</div>
+
+</div><div id="toast"></div>
+<script>__APP_JS__</script></body></html>
