@@ -51,6 +51,7 @@ class Registry
         'sys/crontab' => [Crontab::class, 'handle'],
         'sys/auth'    => [Auth::class, 'handle'],
         'sys/service' => [Service::class, 'handle'],
+        'sys/init'    => [Init::class, 'handle'],
         'sys/config'  => [Config::class, 'handle'],
         'sys/ip'      => [Ip::class, 'handle'],
         'sys/push'    => [Push::class, 'handle'],
