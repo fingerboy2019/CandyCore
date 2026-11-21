@@ -1,0 +1,169 @@
+/**
+ * 文档站打印样式
+ * 须在主题 CSS 之后以 media="print" 引入，覆盖各主题 .markdown-body { margin-left: 260px !important }
+ */
+
+/* 侧栏与固定 UI（nav 占位 260px 由正文 margin 产生，须一并归零） */
+.sidebar,
+.sidebar-header,
+.sidebar-toggle-btn,
+.sidebar-copyright,
+.toc-container,
+.doc-action-buttons,
+.search-results,
+.nav-article {
+    display: none !important;
+}
+
+html,
+body,
+.container-fluid {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
+}
+
+html body .container-fluid .markdown-body,
+html body .container-fluid .markdown-body.container,
+html body.no-sidebar .container-fluid .markdown-body,
+html body.no-sidebar .container-fluid .markdown-body.container,
+html.sidebar-active body .container-fluid .markdown-body,
+html.sidebar-active body .container-fluid .markdown-body.container {
+    margin: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 12mm !important;
+    box-sizing: border-box !important;
+    position: static !important;
+    left: auto !important;
+    transform: none !important;
+}
+
+.breadcrumb,
+.article-navigation {
+    page-break-inside: avoid;
+}
+
+pre,
+table,
+.code-block,
+.tabs-container,
+.custom-container {
+    page-break-inside: avoid;
+}
+
+body.dark-mode,
+body.dark-mode .markdown-body {
+    background: #fff !important;
+    color: #000 !important;
+}
+
+/* 代码块：打印时强制浅色底 + 深色字（Prism 暗色主题去背景后 token 会发虚） */
+.mac-code-container,
+.markdown-body .code-block,
+.markdown-body pre,
+.markdown-body pre[class*="language-"],
+pre.line-numbers {
+    background: #f6f8fa !important;
+    color: #24292e !important;
+    box-shadow: none !important;
+    border: 1px solid #d0d7de !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+.mac-code-header {
+    background: #eef1f4 !important;
+    border-bottom: 1px solid #d0d7de !important;
+}
+
+.mac-code-buttons,
+div.code-toolbar > .toolbar,
+.copy-to-clipboard-button,
+button[data-prismjs-copy] {
+    display: none !important;
+}
+
+.mac-code-title,
+.mac-code-title em,
+.markdown-body .code-block .code-type {
+    color: #57606a !important;
+}
+
+.mac-code-container pre,
+.mac-code-container code,
+.markdown-body .code-block pre,
+.markdown-body .code-block code,
+.markdown-body pre code,
+.markdown-body pre code[class*="language-"],
+code[class*="language-"] {
+    background: transparent !important;
+    color: #24292e !important;
+    text-shadow: none !important;
+}
+
+.markdown-body pre code *,
+.markdown-body .code-block code *,
+.token,
+span.token,
+code .token {
+    color: #24292e !important;
+    background: transparent !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata,
+.hljs-comment,
+.hljs-quote {
+    color: #6a737d !important;
+}
+
+.token.string,
+.token.attr-value,
+.token.regex,
+.token.url,
+.hljs-string {
+    color: #032f62 !important;
+}
+
+.token.keyword,
+.token.tag,
+.token.selector,
+.token.important,
+.token.bold,
+.hljs-keyword,
+.hljs-selector-tag {
+    color: #d73a49 !important;
+}
+
+.markdown-body .code-block .line-numbers,
+.markdown-body .code-block .line-numbers::before,
+.line-numbers .line-numbers-rows > span:before {
+    background: #f0f2f5 !important;
+    color: #57606a !important;
+}
+
+.markdown-body .code-block .line-numbers::after,
+.markdown-body .code-block code::after {
+    background-color: #d0d7de !important;
+}
+
+.markdown-body scode {
+    background: #f0f2f5 !important;
+    color: #24292e !important;
+    border: 1px solid #d0d7de !important;
+}
+
+a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    color: #666;
+}

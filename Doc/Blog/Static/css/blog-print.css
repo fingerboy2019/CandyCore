@@ -1,0 +1,47 @@
+/**
+ * Candy Blog — 打印样式
+ */
+
+@media print {
+    .blog-header,
+    .blog-aside,
+    .blog-overlay,
+    .blog-nav-toggle,
+    .blog-toolbar,
+    .search-results,
+    .blog-article .toc-container {
+        display: none !important;
+    }
+
+    body.blog {
+        background: #fff !important;
+        color: #000 !important;
+    }
+
+    .blog-layout {
+        max-width: 100% !important;
+        padding: 0 !important;
+    }
+
+    .blog-main,
+    .blog-article {
+        max-width: 100% !important;
+        padding: 0 12mm !important;
+    }
+
+    .blog-article a {
+        color: #000 !important;
+        text-decoration: underline !important;
+    }
+
+    .blog-pager,
+    .article-navigation,
+    .blog-footer,
+    .copyright-footer {
+        page-break-inside: avoid;
+    }
+
+    pre, table, .code-block, .tabs-container {
+        page-break-inside: avoid;
+    }
+}

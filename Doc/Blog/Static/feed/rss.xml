@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Candy 博客</title>
+    <link>http://blog.candy.com/</link>
+    <description>基于 Markdown 的轻量博客</description>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 31 Jul 2026 05:45:37 GMT</lastBuildDate>
+    <atom:link href="http://blog.candy.com/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>UrlParser 路由劫持与单入口分流</title>
+      <link>http://blog.candy.com/框架使用/UrlParser路由劫持</link>
+      <guid isPermaLink="true">http://blog.candy.com/框架使用/UrlParser路由劫持</guid>
+      <pubDate>Mon, 13 Jul 2026 16:00:00 GMT</pubDate>
+      <description>/Doc/、/Blog/ 与 MVCS 三轨并行时的请求分流要点。</description>
+      <category>框架使用</category>
+      <author>博主</author>
+    </item>
+    <item>
+      <title>Markdown 博客模式与安全目录</title>
+      <link>http://blog.candy.com/默认分类/Markdown博客模式</link>
+      <guid isPermaLink="true">http://blog.candy.com/默认分类/Markdown博客模式</guid>
+      <pubDate>Sat, 11 Jul 2026 16:00:00 GMT</pubDate>
+      <description>随机 content_dir、路由劫持与 Nginx 拦截，避免正文被直接 URL 猜测下载。</description>
+      <category>默认分类</category>
+      <author>博主</author>
+    </item>
+    <item>
+      <title>Candy 框架 MVCS 架构实践</title>
+      <link>http://blog.candy.com/默认分类/MVCS架构实践</link>
+      <guid isPermaLink="true">http://blog.candy.com/默认分类/MVCS架构实践</guid>
+      <pubDate>Thu, 09 Jul 2026 16:00:00 GMT</pubDate>
+      <description>从 Controls、Services、Models 到 Views 的分层职责梳理，以及 Workerman 常驻进程下的开发体验与缓存策略。</description>
+      <category>默认分类</category>
+      <author>博主</author>
+    </item>
+    <item>
+      <title>Hook 钩子系统：从 tags.php 到行为类</title>
+      <link>http://blog.candy.com/默认分类/Hook钩子系统</link>
+      <guid isPermaLink="true">http://blog.candy.com/默认分类/Hook钩子系统</guid>
+      <pubDate>Tue, 07 Jul 2026 16:00:00 GMT</pubDate>
+      <description>梳理 Candy 事件标签注册、执行顺序与 ApplySiteBrandLang 等典型行为。</description>
+      <category>默认分类</category>
+      <author>博主</author>
+    </item>
+    <item>
+      <title>Admin 后台 i18n 语言包同步</title>
+      <link>http://blog.candy.com/默认分类/Admin语言包同步</link>
+      <guid isPermaLink="true">http://blog.candy.com/默认分类/Admin语言包同步</guid>
+      <pubDate>Sat, 04 Jul 2026 16:00:00 GMT</pubDate>
+      <description>zh-cn 维护、sync-admin-langs 与多语言 MENU 注解对齐实践。</description>
+      <category>默认分类</category>
+      <author>博主</author>
+    </item>
+  </channel>
+</rss>

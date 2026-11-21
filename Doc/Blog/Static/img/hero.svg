@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 280" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#dce9f5"/>
+      <stop offset="55%" stop-color="#eef4fa"/>
+      <stop offset="100%" stop-color="#f7efe4"/>
+    </linearGradient>
+    <linearGradient id="mount" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8aa4b8"/>
+      <stop offset="100%" stop-color="#c5d4df"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="280" fill="url(#sky)"/>
+  <ellipse cx="980" cy="72" rx="42" ry="42" fill="#e8a598" opacity="0.85"/>
+  <path d="M0 220 Q200 160 360 200 T720 185 T1200 210 V280 H0Z" fill="url(#mount)" opacity="0.55"/>
+  <path d="M0 240 Q280 190 520 230 T960 215 T1200 235 V280 H0Z" fill="#9eb3c4" opacity="0.45"/>
+  <path d="M0 255 Q150 235 300 250 T600 242 T900 258 T1200 248 V280 H0Z" fill="#b8c9d6" opacity="0.35"/>
+  <g fill="#5c6d7e" opacity="0.5">
+    <path d="M120 90 Q125 80 130 90 Q135 100 120 100 Q105 100 110 90 Q115 80 120 90Z" transform="translate(0,10) scale(1.2)"/>
+    <path d="M160 70 Q165 60 170 70 Q175 80 160 80 Q145 80 150 70 Q155 60 160 70Z"/>
+    <path d="M200 100 Q205 90 210 100 Q215 110 200 110 Q185 110 190 100 Q195 90 200 100Z" transform="translate(20,0)"/>
+  </g>
+</svg>
