@@ -37,6 +37,15 @@ class Init
     ];
 
     /**
+     * 支持的空间创建类型（对应 Build::bulidSpaces 的三种）
+     */
+    private const SPACES = [
+        'app'   => '',
+        'addon' => 'addon',
+        'plug'  => 'plug',
+    ];
+
+    /**
      * 执行生成
      *
      * @return string JSON
@@ -66,11 +75,16 @@ class Init
         $dry  = (string) ($_GET['dry'] ?? '') === '1';
         $over = (string) ($_GET['overwrite'] ?? '') === '1';
 
+        // ③-a 空间创建：主应用 / 扩展 / 插件（等价 make:app，复用 Build::bulidSpaces 的三种类型）
+        if (isset(self::SPACES[$type])) {
+            return self::space($type, $app !== '' ? $app : $name, $dry);
+        }
+
         if (preg_match('/^[A-Z][A-Za-z0-9_]{0,39}$/', $app) !== 1) {
             return self::json(400, 'app 不合法：需以大写字母开头，仅字母/数字/下划线，最长 40');
         }
         if (isset(self::TYPES[$type]) === false) {
-            return self::json(400, 'type 必须是：' . implode(' / ', array_keys(self::TYPES)));
+            return self::json(400, 'type 必须是：' . implode(' / ', array_merge(array_keys(self::SPACES), array_keys(self::TYPES))));
         }
         if ($name === '') {
             $name = $app;
@@ -174,6 +188,80 @@ class Init
             return trim(substr($auth, 7));
         }
         return trim((string) ($_COOKIE['candy_endpoint_token'] ?? ''));
+    }
+
+    /**
+     * 创建空间：主应用 / 扩展 / 插件（复用 Build::bulidSpaces）
+     *
+     * 与 make:app 等价：
+     *   app   → Application/{Name}/ + Plugins/{Name}/（默认分支会同时建插件目录）
+     *   addon → Addons/{Name}/（需项目开启 $addons）
+     *   plug  → Plugins/{Name}/
+     *
+     * @param string $type app|addon|plug
+     * @param string $rawName 名称
+     * @param bool $dry 只预览
+     * @return string JSON
+     */
+    private static function space(string $type, string $rawName, bool $dry): string
+    {
+        $kind = self::SPACES[$type];
+        // 与框架一致：ucfirst(strtolower())，避免用户以为生成 MyApp 实际得到 Myapp
+        $name = ucfirst(strtolower(trim($rawName)));
+        if (preg_match('/^[A-Z][A-Za-z0-9_]{0,39}$/', $name) !== 1) {
+            return self::json(400, '名称不合法：需以字母开头，仅字母/数字/下划线，最长 40（框架会规范为「首字母大写+其余小写」）');
+        }
+
+        $root   = rtrim(C('CANDYROOT'), '/') . '/';
+        $target = $kind === 'addon'
+            ? $root . 'Addons/' . $name . '/'
+            : ($kind === 'plug' ? $root . 'Plugins/' . $name . '/' : $root . 'Application/' . $name . '/');
+
+        if (is_dir($target)) {
+            return self::json(409, '已存在：' . self::rel($target) . '（换个名字，或先手动删除）');
+        }
+
+        if ($kind === 'addon') {
+            include C('INCPATH') . 'System.inc.php';
+            if (is_null(G('Addons'))) {
+                return self::json(403, '项目未开启 Addon 功能：在 Source/Inc/System.inc.php 配置 $addons');
+            }
+        }
+
+        if ($dry) {
+            return self::json(0, 'ok（预览，未创建）', [
+                'type' => $type,
+                'name' => $name,
+                'path' => self::rel($target),
+                'plan' => $type === 'app'
+                    ? '创建 Application/' . $name . '/ 与 Plugins/' . $name . '/（含模板、路由、语言库）'
+                    : '创建 ' . self::rel($target),
+            ]);
+        }
+
+        if (\Candy\Core\Build::bulidSpaces($name, $kind) !== true) {
+            return self::json(500, '创建失败（框架返回 false：目录已存在、未开启 Addon 或模板缺失）');
+        }
+
+        $files = 0;
+        if (is_dir($target)) {
+            $it = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($target, \FilesystemIterator::SKIP_DOTS)
+            );
+            foreach ($it as $f) {
+                if ($f->isFile()) {
+                    $files++;
+                }
+            }
+        }
+
+        return self::json(0, 'created', [
+            'type'  => $type,
+            'name'  => $name,
+            'path'  => self::rel($target),
+            'files' => $files,
+            'note'  => $type === 'app' ? '默认分支同时创建了 Plugins/' . $name . '/' : '',
+        ]);
     }
 
     /**
