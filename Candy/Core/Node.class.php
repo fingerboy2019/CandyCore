@@ -544,10 +544,13 @@ final class Node {
 		}
 
 		if($useCache && !\Candy\Core\Cache::isFileDriver() && $memCache = \Candy\Core\Cache::store()){
-			self::$methods = $memCache->get(\Candy\Core\Cache::sharedKey('NodeMethods'), []);
+			// 缓存驱动未命中时可能返回 null（各驱动对默认值的实现不一致），
+			// 这里必须收敛成数组：方法声明返回 array，返回 null 会直接 TypeError 打崩首页。
+			$loaded = $memCache->get(\Candy\Core\Cache::sharedKey('NodeMethods'), []);
+			self::$methods = is_array($loaded) ? $loaded : [];
 		}
 
-		return self::$methods;
+		return is_array(self::$methods) ? self::$methods : [];
     }
 	
 	/**
