@@ -52,6 +52,7 @@ class Registry
         'sys/auth'    => [Auth::class, 'handle'],
         'sys/service' => [Service::class, 'handle'],
         'sys/init'    => [Init::class, 'handle'],
+        'sys/debug'   => [Debug::class, 'handle'],
         'sys/config'  => [Config::class, 'handle'],
         'sys/ip'      => [Ip::class, 'handle'],
         'sys/push'    => [Push::class, 'handle'],

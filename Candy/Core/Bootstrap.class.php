@@ -248,6 +248,9 @@ final class Bootstrap
 
 		listen('route_start');
 		UrlParser::parseUrl();
+
+		// DEBUG 模式安全提醒（只在 HTML 页面注入提示条，JSON 不受影响）
+		\Candy\Extend\Security\DebugNotice::boot();
 		listen('route_end');
 
 		Security::runMiddlewares('End');

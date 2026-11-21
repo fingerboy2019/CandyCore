@@ -27,6 +27,6 @@ foreach ([
 require __DIR__ . '/lazy.func.php';
 
 // Tier 2a：高频小工具（同步加载）
-foreach (['lang', 'dict', 'custom_field', 'string', 'app', 'schedule', 'collection'] as $name) {
+foreach (['lang', 'dict', 'custom_field', 'string', 'app', 'schedule', 'collection', 'security'] as $name) {
 	require __DIR__ . "/{$name}.func.php";
 }
