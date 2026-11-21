@@ -63,9 +63,9 @@ class Init
             return self::json(403, 'token 不正确：请带 ?token=… 或 Authorization: Bearer …，或先到 /sys/url 保存令牌');
         }
 
-        // ② 仅开发环境
-        if (defined('DEV') === false) {
-            return self::json(403, 'sys/init 仅在开发环境可用（在 Source/Inc/Init.inc.php 定义 DEV）');
+        // ② 仅 DEBUG 模式：与 Bootstrap::route() 里 Build::start 的入口判定保持一致
+        if (isDebug() === false) {
+            return self::json(403, 'sys/init 仅在 DEBUG 模式可用（.env 的 APP_DEBUG=1 或 Sys.inc.php 的 runtime.debug=true）');
         }
 
         // ③ 参数
