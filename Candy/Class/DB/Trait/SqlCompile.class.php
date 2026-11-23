@@ -20,6 +20,43 @@ use Candy\Extend\DB\Dialect\DialectInterface;
 defined('CANDY') OR die('You Are A Bad Guy. o_O???');
 
 trait SqlCompile {
+	/**
+	 * 字段是否在表结构清单里
+	 *
+	 * fieldList 形如 ['pri'=>'id','id'=>...,'thread_id'=>...]，键是列名；
+	 * 兼容老形态（只有值）。早期用 in_array 按值比对，键形态下永远不命中。
+	 *
+	 * @param string $name 字段名
+	 * @return bool
+	 */
+	private function fieldListHas(string $name): bool
+	{
+		foreach ((array)$this->fieldList as $key => $value) {
+			$candidate = is_string($key) ? $key : $value;
+			if (is_string($candidate) && strcasecmp($candidate, $name) === 0) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * 当前查询是否使用了显式 JOIN（join($table,$alias,$type,$on)）
+	 *
+	 * @return bool
+	 */
+	private function hasExplicitJoin(): bool
+	{
+		foreach ((array)$this->sqlArgs('join') as $joinTab) {
+			if (is_array($joinTab) && ($joinTab['__explicit'] ?? false) === true) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private function compileGroup(string $groupField): string
 	{
 		if (preg_match('/^GROUP\s+BY\s+/i', trim($groupField))) {
@@ -41,7 +78,7 @@ trait SqlCompile {
 			$fieldName = preg_replace('/^[a-zA-Z_][a-zA-Z0-9_]*\./', '', $fieldName) ?? $fieldName;
 			
 			// 验证字段是否在 fieldList 中
-			if (in_array($fieldName, $this->fieldList)) {
+			if ($this->fieldListHas($fieldName) || $this->hasExplicitJoin()) {
 				// 验证字段格式（支持字段名和简单函数）
 				if (preg_match('/^(?:[a-zA-Z_][a-zA-Z0-9_]*\.)?[a-zA-Z0-9_]+(\([^)]*\))?$/i', $fieldForValidation)) {
 					$validFields[] = $field;
@@ -778,7 +815,7 @@ trait SqlCompile {
 					continue;
 				}
 				if ($trim === '' || str_contains($trim, $lq) || str_contains($trim, $rq)
-					|| str_contains($trim, ' ') || str_contains($trim, '.') || str_contains($trim, '(')) {
+					|| str_contains($trim, ' ') || str_contains($trim, '.') || str_contains($trim, '(') || preg_match('/^[A-Za-z_][A-Za-z0-9_]*\.[A-Za-z_][A-Za-z0-9_]*$/', $trim) === 1) {
 					$fields[] = $trim;
 					continue;
 				}
@@ -811,7 +848,7 @@ trait SqlCompile {
 							continue;
 						}
 						// 已含任一侧引号、空格（如 id desc）或表达式：保持主体，避免再拼主表 as
-						if (str_contains($trim, $lq) || str_contains($trim, $rq) || str_contains($trim, ' ') || str_contains($trim, '(')) {
+						if (str_contains($trim, $lq) || str_contains($trim, $rq) || str_contains($trim, ' ') || str_contains($trim, '(') || preg_match('/^[A-Za-z_][A-Za-z0-9_]*\.[A-Za-z_][A-Za-z0-9_]*$/', $trim) === 1) {
 							// 已是 alias.column / 表达式时禁止变成 inv.loc.column
 							if ($as !== '' && (
 								preg_match('/^[A-Za-z_][A-Za-z0-9_]*\./', $trim) === 1
@@ -836,7 +873,7 @@ trait SqlCompile {
 						// 将中文逗号替换为英文逗号
 						if(stripos($return[0], '，')) $return[0] = str_replace('，', ',', $return[0]);
 						$trim = trim($return[0]);
-						if (str_contains($trim, $lq) || str_contains($trim, $rq) || str_contains($trim, ' ') || str_contains($trim, '(')) {
+						if (str_contains($trim, $lq) || str_contains($trim, $rq) || str_contains($trim, ' ') || str_contains($trim, '(') || preg_match('/^[A-Za-z_][A-Za-z0-9_]*\.[A-Za-z_][A-Za-z0-9_]*$/', $trim) === 1) {
 							if ($as !== '' && (
 								preg_match('/^[A-Za-z_][A-Za-z0-9_]*\./', $trim) === 1
 								|| str_contains($trim, '(')
