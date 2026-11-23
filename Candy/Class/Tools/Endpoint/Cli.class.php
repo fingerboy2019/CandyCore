@@ -196,6 +196,20 @@ pre{background:#0b1220;border:1px solid #1e293b;border-radius:8px;padding:14px;m
 .tag.bad{color:#f87171;border-color:#7f1d1d;background:#2a0b0b}
 .tag.run{color:#fbbf24;border-color:#78350f;background:#271a04}
 .empty{color:#64748b;font-size:12.5px;padding:10px 9px}
+/* 滚动条：细、圆角、悬停变亮；页面与输出区各一套，颜色跟深色底对齐 */
+*{scrollbar-width:thin;scrollbar-color:#3a4a63 transparent}
+html,body{scrollbar-color:#3a4a63 #0f172a}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#334155;border-radius:8px;border:2px solid transparent;background-clip:content-box;transition:background .15s}
+::-webkit-scrollbar-thumb:hover{background:#475569;background-clip:content-box}
+::-webkit-scrollbar-thumb:active{background:#64748b;background-clip:content-box}
+::-webkit-scrollbar-corner{background:transparent}
+.log{scrollbar-gutter:stable}
+.log::-webkit-scrollbar{width:9px}
+.log::-webkit-scrollbar-thumb{background:#2c3b52;border-radius:8px;border:2px solid transparent;background-clip:content-box}
+.log::-webkit-scrollbar-thumb:hover{background:#3f5372;background-clip:content-box}
+.log::-webkit-scrollbar-thumb:active{background:#556b8c;background-clip:content-box}
 </style>
 </head>
 <body>
