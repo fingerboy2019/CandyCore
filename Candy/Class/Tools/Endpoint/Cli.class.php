@@ -175,13 +175,27 @@ input[type=text]:focus{border-color:#3b82f6}
 #cmd{width:240px}#args{flex:1;min-width:220px}
 button{cursor:pointer;border:1px solid #334155;background:#334155;color:#e2e8f0;border-radius:6px;padding:8px 14px;font-size:13px}
 button:hover{background:#475569}
+button:disabled{opacity:.55;cursor:default}
 button.primary{background:#2563eb;border-color:#2563eb;color:#fff;font-weight:600}
 button.primary:hover{background:#1d4ed8}
 button.q{background:#0f172a;border-color:#334155;color:#93c5fd;padding:5px 10px;font-size:12px}
 .qbar{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 pre{background:#0b1220;border:1px solid #1e293b;border-radius:8px;padding:14px;margin:0;overflow:auto;max-height:520px;white-space:pre-wrap;word-break:break-word;font:12.5px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#cbd5e1}
-.meta{display:flex;gap:14px;color:#94a3b8;font-size:12px;margin:10px 0 8px}
+.meta{display:flex;gap:14px;color:#94a3b8;font-size:12px;margin:0 0 10px;flex-wrap:wrap}
 .hint{color:#94a3b8;font-size:12px;margin-top:8px}
+.log{background:#0b1220;border:1px solid #1e293b;border-radius:8px;padding:6px;overflow:auto;max-height:560px}
+.log pre{background:transparent;border:0;border-radius:0;padding:2px 9px 10px;margin:0;max-height:none;overflow:visible}
+.entry{border-top:1px dashed #1e293b;padding-top:8px;margin-top:8px}
+.entry:first-child{border-top:0;padding-top:0;margin-top:0}
+.cl{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;font:12.5px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:2px 9px 4px}
+.cl .p{color:#38bdf8;font-weight:700}
+.cl .t{color:#e2e8f0;word-break:break-all}
+.cl .dim{color:#64748b;font-size:11.5px}
+.tag{font-size:11px;border-radius:4px;padding:1px 6px;border:1px solid #334155;color:#94a3b8;white-space:nowrap}
+.tag.ok{color:#4ade80;border-color:#166534;background:#052e16}
+.tag.bad{color:#f87171;border-color:#7f1d1d;background:#2a0b0b}
+.tag.run{color:#fbbf24;border-color:#78350f;background:#271a04}
+.empty{color:#64748b;font-size:12.5px;padding:10px 9px}
 </style>
 </head>
 <body>
@@ -198,50 +212,97 @@ pre{background:#0b1220;border:1px solid #1e293b;border-radius:8px;padding:14px;m
       <button id="clearout">清屏</button>
     </div>
     <div class="qbar">{$btns}</div>
-    <div class="hint">提示：危险命令会要求输入命令名本身作为确认；输出已去 ANSI 色码并截断到 64KB。</div>
+    <div class="hint">提示：危险命令会要求输入命令名本身作为确认；输出已去 ANSI 色码并截断到 64KB。每次执行<b>追加</b>到下方日志（不覆盖），按 Enter 可直接执行。</div>
   </div>
 
   <div class="card">
-    <div class="meta"><span id="state">就绪</span><span id="cost"></span><span id="code"></span></div>
-    <pre id="out">等待执行…</pre>
+    <div class="meta"><span id="state">就绪</span><span id="cost"></span><span id="code"></span><span id="count"></span></div>
+    <div id="log" class="log"><div class="empty">等待执行…</div></div>
   </div>
 </div>
 <script>
 var DANGER = {$dangerJs};
 var elCmd=document.getElementById('cmd'),elArgs=document.getElementById('args'),
-    elRun=document.getElementById('run'),elOut=document.getElementById('out'),
-    elState=document.getElementById('state'),elCost=document.getElementById('cost'),elCode=document.getElementById('code');
+    elRun=document.getElementById('run'),elLog=document.getElementById('log'),
+    elState=document.getElementById('state'),elCost=document.getElementById('cost'),
+    elCode=document.getElementById('code'),elCount=document.getElementById('count');
+var seq=0;
+
+function nearBottom(el){ return el.scrollHeight - el.scrollTop - el.clientHeight < 48; }
+function toBottom(el){ el.scrollTop = el.scrollHeight; }
+
+function addEntry(cmd,argsV){
+  var emp=elLog.querySelector('.empty');
+  if(emp){ elLog.removeChild(emp); }
+  seq++;
+  var box=document.createElement('div'); box.className='entry';
+  var head=document.createElement('div'); head.className='cl';
+  var p=document.createElement('span'); p.className='p'; p.textContent='$';
+  var t=document.createElement('span'); t.className='t';
+  t.textContent='php candy '+cmd+(argsV?(' '+argsV):'');
+  var tag=document.createElement('span'); tag.className='tag run'; tag.textContent='执行中';
+  var dim=document.createElement('span'); dim.className='dim'; dim.textContent='#'+seq;
+  head.appendChild(p); head.appendChild(t); head.appendChild(tag); head.appendChild(dim);
+  var pre=document.createElement('pre'); pre.textContent='…';
+  box.appendChild(head); box.appendChild(pre);
+  elLog.appendChild(box);
+  elCount.textContent='共 '+seq+' 次';
+  return {tag:tag,pre:pre,dim:dim};
+}
 
 document.querySelectorAll('button.q').forEach(function(b){
   b.addEventListener('click',function(){ elCmd.value=b.dataset.cmd; elArgs.value=''; elRun.click(); });
 });
-document.getElementById('clearout').addEventListener('click',function(){ elOut.textContent=''; });
+document.getElementById('clearout').addEventListener('click',function(){
+  elLog.textContent='';
+  var d=document.createElement('div'); d.className='empty';
+  d.textContent='已清屏（下一次执行会追加新记录）';
+  elLog.appendChild(d);
+  seq=0; elCount.textContent=''; elState.textContent='就绪'; elCost.textContent=''; elCode.textContent='';
+});
 elArgs.addEventListener('keydown',function(e){ if(e.key==='Enter'){ elRun.click(); } });
 elCmd.addEventListener('keydown',function(e){ if(e.key==='Enter'){ elRun.click(); } });
 
 elRun.addEventListener('click',async function(){
   var cmd=(elCmd.value||'').trim();
-  if(!cmd){ elOut.textContent='请输入命令名'; return; }
-  var confirm='';
+  if(!cmd){ elState.textContent='请输入命令名'; return; }
+  var argsV=(elArgs.value||'').trim();
+  var confirmWord='';
   if(DANGER.indexOf(cmd)!==-1){
-    confirm=window.prompt('危险命令「'+cmd+'」\\n请输入命令名确认：','');
-    if(confirm!==cmd){ elOut.textContent='已取消（确认词不匹配）'; return; }
+    confirmWord=window.prompt('危险命令「'+cmd+'」\\n请输入命令名确认：','');
+    if(confirmWord!==cmd){ elState.textContent='已取消（确认词不匹配）'; return; }
   }
-  elState.textContent='执行中…'; elCost.textContent=''; elCode.textContent=''; elOut.textContent='';
+  var follow=nearBottom(elLog);
+  var ent=addEntry(cmd,argsV);
+  if(follow){ toBottom(elLog); }
+  elRun.disabled=true;
+  elState.textContent='执行中…'; elCost.textContent=''; elCode.textContent='';
+  var t0=(new Date()).getTime();
   try{
     var url='/sys/cli?do=exec&cmd='+encodeURIComponent(cmd)
-          +'&args='+encodeURIComponent((elArgs.value||'').trim())
-          +'&confirm='+encodeURIComponent(confirm);
+          +'&args='+encodeURIComponent(argsV)
+          +'&confirm='+encodeURIComponent(confirmWord);
     var r=await fetch(url,{credentials:'same-origin'});
     var j=await r.json();
     var d=j.data||{};
-    elState.textContent = (j.code===0?'完成':'失败');
-    elCost.textContent = d.time?('耗时 '+d.time+' ms'):'';
-    elCode.textContent = 'exit='+(d.code===undefined?'-':d.code);
-    elOut.textContent = (d.output||j.message||'(无输出)');
-  }catch(e){
-    elState.textContent='请求失败'; elOut.textContent=String(e);
+    var ok=(j.code===0);
+    var ms=(new Date()).getTime()-t0;
+    ent.tag.className='tag '+(ok?'ok':'bad');
+    ent.tag.textContent=ok?'完成':'失败';
+    ent.dim.textContent='#'+seq+' · '+ms+' ms · exit='+(d.code===undefined?'-':d.code)+(d.time?(' · 服务端 '+d.time+' ms'):'');
+    ent.pre.textContent=(d.output||j.message||'(无输出)');
+    elState.textContent=ok?'完成':'失败';
+    elCost.textContent='耗时 '+ms+' ms';
+    elCode.textContent='exit='+(d.code===undefined?'-':d.code);
+  }catch(err){
+    var ms2=(new Date()).getTime()-t0;
+    ent.tag.className='tag bad'; ent.tag.textContent='请求失败';
+    ent.dim.textContent='#'+seq+' · '+ms2+' ms';
+    ent.pre.textContent='请求失败：'+String(err);
+    elState.textContent='请求失败';
   }
+  elRun.disabled=false;
+  if(nearBottom(elLog)){ toBottom(elLog); }
 });
 </script>
 </body>
