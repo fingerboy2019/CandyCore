@@ -208,39 +208,39 @@ pre{background:#0b1220;border:1px solid #1e293b;border-radius:8px;padding:14px;m
 </div>
 <script>
 var DANGER = {$dangerJs};
-var $cmd=document.getElementById('cmd'),$args=document.getElementById('args'),
-    $run=document.getElementById('run'),$out=document.getElementById('out'),
-    $state=document.getElementById('state'),$cost=document.getElementById('cost'),$code=document.getElementById('code');
+var elCmd=document.getElementById('cmd'),elArgs=document.getElementById('args'),
+    elRun=document.getElementById('run'),elOut=document.getElementById('out'),
+    elState=document.getElementById('state'),elCost=document.getElementById('cost'),elCode=document.getElementById('code');
 
 document.querySelectorAll('button.q').forEach(function(b){
-  b.addEventListener('click',function(){ $cmd.value=b.dataset.cmd; $args.value=''; $run.click(); });
+  b.addEventListener('click',function(){ elCmd.value=b.dataset.cmd; elArgs.value=''; elRun.click(); });
 });
-document.getElementById('clearout').addEventListener('click',function(){ $out.textContent=''; });
-$args.addEventListener('keydown',function(e){ if(e.key==='Enter'){ $run.click(); } });
-$cmd.addEventListener('keydown',function(e){ if(e.key==='Enter'){ $run.click(); } });
+document.getElementById('clearout').addEventListener('click',function(){ elOut.textContent=''; });
+elArgs.addEventListener('keydown',function(e){ if(e.key==='Enter'){ elRun.click(); } });
+elCmd.addEventListener('keydown',function(e){ if(e.key==='Enter'){ elRun.click(); } });
 
-$run.addEventListener('click',async function(){
-  var cmd=($cmd.value||'').trim();
-  if(!cmd){ $out.textContent='请输入命令名'; return; }
+elRun.addEventListener('click',async function(){
+  var cmd=(elCmd.value||'').trim();
+  if(!cmd){ elOut.textContent='请输入命令名'; return; }
   var confirm='';
   if(DANGER.indexOf(cmd)!==-1){
-    confirm=window.prompt('危险命令「'+cmd+'」\n请输入命令名确认：','');
-    if(confirm!==cmd){ $out.textContent='已取消（确认词不匹配）'; return; }
+    confirm=window.prompt('危险命令「'+cmd+'」\\n请输入命令名确认：','');
+    if(confirm!==cmd){ elOut.textContent='已取消（确认词不匹配）'; return; }
   }
-  $state.textContent='执行中…'; $cost.textContent=''; $code.textContent=''; $out.textContent='';
+  elState.textContent='执行中…'; elCost.textContent=''; elCode.textContent=''; elOut.textContent='';
   try{
     var url='/sys/cli?do=exec&cmd='+encodeURIComponent(cmd)
-          +'&args='+encodeURIComponent(($args.value||'').trim())
+          +'&args='+encodeURIComponent((elArgs.value||'').trim())
           +'&confirm='+encodeURIComponent(confirm);
     var r=await fetch(url,{credentials:'same-origin'});
     var j=await r.json();
     var d=j.data||{};
-    $state.textContent = (j.code===0?'完成':'失败');
-    $cost.textContent = d.time?('耗时 '+d.time+' ms'):'';
-    $code.textContent = 'exit='+(d.code===undefined?'-':d.code);
-    $out.textContent = (d.output||j.message||'(无输出)');
+    elState.textContent = (j.code===0?'完成':'失败');
+    elCost.textContent = d.time?('耗时 '+d.time+' ms'):'';
+    elCode.textContent = 'exit='+(d.code===undefined?'-':d.code);
+    elOut.textContent = (d.output||j.message||'(无输出)');
   }catch(e){
-    $state.textContent='请求失败'; $out.textContent=String(e);
+    elState.textContent='请求失败'; elOut.textContent=String(e);
   }
 });
 </script>

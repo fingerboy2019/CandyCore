@@ -187,6 +187,11 @@ final class Bootstrap
 
 		defined('DEBUG') OR define('DEBUG', $debug ? 1 : 0);
 		defined('DEV')   OR define('DEV', $dev ? 1 : 0);
+
+		// 同步 isDebug() 的第二段开关（isDebug = DEBUG==1 且 $GLOBALS['debug']===1）。
+		// 该值原先由 Autoload.php 末尾 `(defined('DEBUG') && DEBUG == 1) && debug(1)` 设置，
+		// 但常量改成配置驱动后，那一行执行时 DEBUG 尚未定义 → 永远不生效 → isDebug() 恒 false。
+		$GLOBALS['debug'] = $debug ? 1 : 0;
 	}
 
 	/**

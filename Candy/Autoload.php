@@ -91,6 +91,11 @@ if(defined('CLIWORKING') === false){
 	//  Autoload 在 FPM 下每请求都会执行，在此清共享缓存会把生产缓存打穿；
 	//  它们的失效点只有两个：常驻代码换代 reload（RouteRegistry::onWorkerReload）与部署清缓存命令。
 	
+	//运行时标识（DEBUG / DEV）：必须早于 Debug::start()，
+	//否则 Debug::start() 读到的 isDebug() 仍是 false，error_reporting 会按非调试模式设置。
+	//（Bootstrap::boot() 里还会再调一次，defined() OR define 幂等）
+	\Candy\Core\Bootstrap::applyRuntimeFlags();
+
 	//初始化debug
 	Debug::start();
 	
@@ -99,8 +104,7 @@ if(defined('CLIWORKING') === false){
 		\Extend\Adapter::init();
 	}
 
-	//debug模式
-	(defined('DEBUG') && DEBUG == 1) && debug(1);
+	//debug 标识（$GLOBALS['debug']）已由 Bootstrap::applyRuntimeFlags() 在 Debug::start() 之前同步
 
 	set_exception_handler([Debug::class, 'exceptionFormat']);
 }
